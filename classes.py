@@ -54,16 +54,26 @@ class MachineUniverselle:
         self.I = InputRegistryContainer()
         self.R = RegistryContainer()
         self.O = OutputRegistryContainer()
+        self.tasks = []
     
     def build(self,path_of_ram_machine:str="example.ram"):
+        """Build RAM Machine from .ram file"""
         with open(path_of_ram_machine,"r") as f:
-            f.readline()
+            while (line:=f.readline()) != "":
+                pass
+                # task.append()
 
     def set_input(self,data:list):
         pass
 
     def start(self):
-        pass
+        #self.tasks.append((sum, (2,4,7)))
+        i = 0
+        while len(self.tasks) > i:
+            com, args = self.tasks[i]
+            i += com(args)
+
+
 
 MU = MachineUniverselle()
-MU.build()
+MU.start()
