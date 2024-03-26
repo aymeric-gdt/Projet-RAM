@@ -1,48 +1,51 @@
-import ply.lex
+import ply.lex as lex
 
-# Z pouvant être un registre ou un entier positif
+reserved = {
+   # OPERATIONS
+   'ADD' : 'ADD',
+   'SUB' : 'SUB',
+   'DIV' : 'DIV',
+   'MULT' : 'MULT',
+   'MOD' : 'MOD',
+   # REFERENCE
+   '@' : 'REFERENCE',
+   # JUMPS
+   'JUMP' : 'JUMP',
+   'JE' : 'JE',
+   'JLT' : 'JLT',
+   'JGT' : 'JGT',
+   # PARENTHESES
+   '(' : 'LPAREN',
+   ')' : 'RPAREN',
+   # LES REGISTRES
+   'I' : 'REGISTRE_I',
+   'R' : 'REGISTRE_R',
+   'O' : 'REGISTRE_O'
+}
 
-tokens = (
-   'ADD',        # ADD(Za,Zb, Registre)
-   'SUB',        # SUB(Za,Zb, Registre)
-   'DIV',        # DIV(Za,Zb, Registre), division entière
-   'MULT',       # MULT(Za,Zb, Registre)
-   'MOD',        # MOD(Za,Zb, Registre)
+tokens = ['NUMBER', 'ID'] + list(reserved.values())
 
-   'JUMP',       # JUMP(Z)
-   'JE',         # JUMP IF EQUAL
-   'JLT',        # JUMP IF LOWER THAN
-   'JGT',        # JUMP IF GREATER THAN
+def t_ID(t):
+    r'\@|[a-zA-Z_][a-zA-Z_]*'
+    t.type = reserved.get(t.value,'ID')    # Check for reserved words
+    return t
 
-   'NOMBRE',     # Entier relatif"
+def t_NUMBER(t):
+    r'\-?[0-9]'
+    t.value = int(t.value)
+    return t
 
-   'REGISTRE_I',
-   'REGISTRE_R',
-   'REGISTRE_O',
+def t_error(t):
+   if t.value[0] not in ['(',')',',','\n']:
+      print("Illegal character '%s'" % t.value[0])
+   t.lexer.skip(1)
 
-   'LPAREN',     # Parenthèse gauche
-   'RPAREN',     # Parenthèse droite
-)
+# Build the lexer
+lexer = lex.lex()
 
-t_ADD = r'ADD'
-t_SUB = r'SUB'
-t_DIV = r'DIV'
-t_MULT = r'MULT'
-t_MOD = r'MOD'
-
-t_JUMP = r'JUMP'
-t_JE = r'JE'
-t_JLT = r'JLT'
-t_JGT = r'JGT'
-
-t_NOMBRE = r'\-?[0-9]'
-
-t_REGISTRE_I = r'I'
-t_REGISTRE_R = r'R'
-t_REGISTRE_O = r'O'
-
-t_LPAREN = r'\('
-t_RPAREN = r'\)'
-
-
-
+with open("example.ram","r") as f:
+    while (line:=f.readline()) != "":
+        print(line)
+        lexer.input(line)
+        while (tok:=lexer.token()):
+            print(tok)
