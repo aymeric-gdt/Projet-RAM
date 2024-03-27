@@ -1,4 +1,9 @@
+######################################### LIB #########################################
+
 import ply.lex as lex
+import ply.yacc as yacc
+
+######################################### LEX #########################################
 
 reserved = {
    # OPERATIONS
@@ -17,10 +22,6 @@ reserved = {
    # PARENTHESES
    '(' : 'LPAREN',
    ')' : 'RPAREN',
-   # LES REGISTRES
-   'I' : 'REGISTRE_I',
-   'R' : 'REGISTRE_R',
-   'O' : 'REGISTRE_O'
 }
 
 tokens = ['NUMBER', 'ID'] + list(reserved.values())
@@ -29,6 +30,11 @@ def t_ID(t):
     r'\@|[a-zA-Z_][a-zA-Z_]*'
     t.type = reserved.get(t.value,'ID')    # Check for reserved words
     return t
+
+def t_REGISTRE(t):
+    r'R|I|[0-9]+'
+
+    t.value = t.value
 
 def t_NUMBER(t):
     r'\-?[0-9]'
@@ -43,9 +49,31 @@ def t_error(t):
 # Build the lexer
 lexer = lex.lex()
 
-with open("example.ram","r") as f:
+######################################### YACC #########################################
+
+def p_result_add(p):
+    'result : ADD NUMBER NUMBER REGISTRE_O NUMBER'
+    p[0] = p[2] + p[3]
+
+def p_RegistreIn_registre_i(p):
+    'RegistreIn : REGISTRE_I NUMBER'
+    p[0] = p[2] + p[3]
+
+def p_error(p):
+    print("Syntax error in input!")
+
+# Build the parser
+parser = yacc.yacc()
+
+######################################### MAIN #########################################
+
+with open("test.ram","r") as f:
     while (line:=f.readline()) != "":
-        print(line)
-        lexer.input(line)
-        while (tok:=lexer.token()):
-            print(tok)
+        parser.parse(line,lexer=lexer)
+
+#with open("test.ram","r") as f:
+#    while (line:=f.readline()) != "":
+#        print(line)
+#        lexer.input(line)
+#        while (tok:=lexer.token()):
+#            print(tok)

@@ -1,70 +1,76 @@
-class RegistryContainer:
+import ply.lex as lex
+import ply.yacc as yacc
+
+command_to_operation = {
+    'ADD' : lambda x, y : x + y,
+    'SUB' : lambda x, y : x - y,
+    'MULT' : lambda x, y : x * y, 
+    'DIV' : lambda x, y : x // y,
+    'MOD' : lambda x, y : x % y
+}
+
+def operation(operation:str,x:'Registre|int', y:'Registre|int', z:'Registre') -> int:
+    z.set_value(command_to_operation.get(operation)(x.get_value() if type(x) is Registre else x, y.get_value() if type(y) is Registre else y))
+    return 1
+
+
+class Registre:
 
     def __init__(self) -> None:
-        """initialise un RegistryContainer vide"""
-        self.__content = list()
-
-    def add_registry(self):
-        """ajoute un registre au RegistryContainer avec la valeur 0 (par défaut)"""
-        self.__content.append(0)
-
-    def read_registry(self,index:int) -> int:
-        """lecture du registre i du RegistryContainer"""
-        return self.__content[index]
+        self.__value = 0
     
-    def write_registry(self,index:int,value:int) -> None:
-        """écriture sur le registre i du RegistryContainer"""
-        self.__content[index] = value
+    def get_value(self) -> int:
+        return self.__value
+    
+    def set_value(self, new_value:int):
+        self.__value = new_value
 
     def __repr__(self) -> str:
-        return self.__content.__repr__()
+        return self.__value.__repr__()
 
 
-class InputRegistryContainer(RegistryContainer):
-
-    def __init__(self) -> None:
-        """Read Only"""
-        super().__init__()
-        self.add_registry()
-
-    def load_data(self, data: list):
-        """Permet de charger des données dans votre InputRegistryContainer"""
-        super().write_registry(index=0,value=len(data))
-        for i,r in enumerate(data,1):
-            super().add_registry()
-            super().write_registry(index=i,value=r)
-    
-    def write_registry(self, index: int, value: int) -> None:
-        raise TypeError("InputRegistryContainer is read only")
-
-
-class OutputRegistryContainer(RegistryContainer):
+class RegistreManager:
 
     def __init__(self) -> None:
-        """Write Only"""
-        super().__init__()
+        self.__name_to_index = dict()
+        self.__registres = []
     
-    def read_registry(self, index: int) -> int:
-        raise TypeError("OutputRegistryContainer is write only")
+    def get_registre_from_name(self, rX:str) -> Registre:
+        if (index:=self.__name_to_index.get(rX, -1)) > -1:
+            return self.__registres[index]
+        else:
+            self.add_registre(rX)
+            return self.get_registre_from_name(rX)
+
+    def add_registre(self, rX:str):
+        self.__name_to_index[rX] = len(self.__registres)
+        self.__registres.append(Registre())
+    
+    def __repr__(self) -> str:
+        out = ""
+        for name, index in self.__name_to_index.items():
+            out += f"{name} : {self.__registres[index]} | "
+        return out
+
 
 
 class MachineUniverselle:
 
     def __init__(self) -> None:
-        self.I = InputRegistryContainer()
-        self.R = RegistryContainer()
-        self.O = OutputRegistryContainer()
+        self.I = []
+        self.R = []
+        self.O = []
         self.tasks = []
+        self.step = 0
     
-    def build(self,path_of_ram_machine:str="example.ram"):
+    def build(self,path_of_ram_machine:str="test.ram"):
         """Build RAM Machine from .ram file"""
-        with open(path_of_ram_machine,"r") as f:
-            while (line:=f.readline()) != "":
-                pass
-                # task.append()
+        pass
 
     def set_input(self,data:list):
-        pass
+        for elem in data:
+            self.I.append(Registre())
+            self.I[-1].set_value(elem)
 
     def start(self):
         #self.tasks.append((sum, (2,4,7)))
@@ -76,4 +82,4 @@ class MachineUniverselle:
 
 
 MU = MachineUniverselle()
-MU.start()
+MU.build()
