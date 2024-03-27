@@ -1,24 +1,48 @@
-import ply.lex as lex
-import ply.yacc as yacc
+import re
 
 command_to_operation = {
     'ADD' : lambda x, y : x + y,
     'SUB' : lambda x, y : x - y,
-    'MULT' : lambda x, y : x * y, 
+    'MULT' : lambda x, y : x * y,
     'DIV' : lambda x, y : x // y,
     'MOD' : lambda x, y : x % y
 }
 
-def operation(operation:str,x:'Registre|int', y:'Registre|int', z:'Registre') -> int:
-    z.set_value(command_to_operation.get(operation)(x.get_value() if type(x) is Registre else x, y.get_value() if type(y) is Registre else y))
-    return 1
+#def operation(operation:str,x:'Registre|int', y:'Registre|int', z:'Registre') -> int:
+#    z.set_value(command_to_operation.get(operation)(x.get_value() if type(x) is Registre else x, y.get_value() if type(y) is Registre else y))
+#    return 1
+
+def operation(args) -> int:
+    command = args[0]
+    if (entry_size:=len(args)) == 2:
+        if command == 'JUMP':
+            return args[1]
+    elif entry_size == 4:
+        x = args[1].get_value() if type(args[1]) is Registre else args[1]
+        y = args[2].get_value() if type(args[2]) is Registre else args[2]
+        z = args[3].get_value() if type(args[3]) is Registre else args[3]
+        if command == 'JE':
+            return z if x == y else 1
+        elif command == 'JLT':
+            return z if x < y else 1
+        elif command == 'JGT':
+            return z if x > y else 1
+        else:
+            args[3].set_value(command_to_operation.get(command)(x,y))
+            return 1
+    else:
+        raise SyntaxError
 
 
 class Registre:
 
-    def __init__(self) -> None:
+    def __init__(self, name:str) -> None:
         self.__value = 0
+        self.__name = name
     
+    def get_name(self)-> str:
+        return self.__name
+
     def get_value(self) -> int:
         return self.__value
     
@@ -26,30 +50,28 @@ class Registre:
         self.__value = new_value
 
     def __repr__(self) -> str:
-        return self.__value.__repr__()
+        return f'{self.__name} : {self.__value}'
 
 
 class RegistreManager:
 
     def __init__(self) -> None:
-        self.__name_to_index = dict()
         self.__registres = []
     
     def get_registre_from_name(self, rX:str) -> Registre:
-        if (index:=self.__name_to_index.get(rX, -1)) > -1:
-            return self.__registres[index]
-        else:
-            self.add_registre(rX)
-            return self.get_registre_from_name(rX)
+        for registre in self.__registres:
+            if registre.get_name() == rX:
+                return registre
+        self.add_registre(rX)
+        return self.__registres[-1]
 
     def add_registre(self, rX:str):
-        self.__name_to_index[rX] = len(self.__registres)
-        self.__registres.append(Registre())
+        self.__registres.append(Registre(rX))
     
     def __repr__(self) -> str:
         out = ""
-        for name, index in self.__name_to_index.items():
-            out += f"{name} : {self.__registres[index]} | "
+        for registre in self.__registres:
+            out += registre.__repr__()+" | "
         return out
 
 
@@ -57,29 +79,39 @@ class RegistreManager:
 class MachineUniverselle:
 
     def __init__(self) -> None:
-        self.I = []
-        self.R = []
-        self.O = []
+        self.registre_manager = RegistreManager()
         self.tasks = []
         self.step = 0
     
+    def print_tasks(self):
+        for task in self.tasks:
+            print(task)
+    
     def build(self,path_of_ram_machine:str="test.ram"):
         """Build RAM Machine from .ram file"""
-        pass
+        commande_finder = re.compile(r'[A-Z][A-Z]+')
+        parenthese_finder = re.compile(r'\(|\)')
+        integer_finder = re.compile(r'^[0-9]+$|^-[0-9]+$')
+
+        with open(path_of_ram_machine,"r") as f:
+            while (line:=f.readline()) != "":
+                line = line.replace('\n','')
+                x,y = commande_finder.search(line).span()
+                com = line[x:y]
+                args = parenthese_finder.sub('',line[y:]).split(',')
+                for i in range(len(args)):
+                    if integer_finder.fullmatch(args[i]):
+                        args[i] = int(args[i])
+                    else:
+                        args[i] = self.registre_manager.get_registre_from_name(args[i])
+                task = tuple([com]+args)
+                self.tasks.append(task)
 
     def set_input(self,data:list):
-        for elem in data:
-            self.I.append(Registre())
-            self.I[-1].set_value(elem)
+        pass
 
-    def start(self):
-        #self.tasks.append((sum, (2,4,7)))
-        i = 0
-        while len(self.tasks) > i:
-            com, args = self.tasks[i]
-            i += com(args)
-
-
-
-MU = MachineUniverselle()
-MU.build()
+    def resolve(self):
+        while self.step < len(self.tasks):
+            self.step += operation(self.tasks[self.step])
+            print(self.registre_manager)
+            print(self.step)

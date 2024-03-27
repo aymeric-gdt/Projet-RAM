@@ -1,16 +1,9 @@
-from classes import operation, RegistreManager
+from classes import MachineUniverselle
 
-rm = RegistreManager()
+ram = MachineUniverselle()
 
-tasks = [('ADD',5,0,rm.get_registre_from_name('r1')), ('MULT',rm.get_registre_from_name('r1'),2,rm.get_registre_from_name('r1'))]
+ram.build(path_of_ram_machine="example.ram")
 
-print(rm)
-for task in tasks:
-    ope, x, y, z = task
-    operation(ope, x, y, z)
-    print(rm)
+ram.print_tasks()
 
-for i in range(10):
-    ope, x, y, z = tasks[1]
-    operation(ope, x, y, z)
-    print(rm)
+ram.start()
