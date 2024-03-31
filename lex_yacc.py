@@ -172,13 +172,15 @@ def p_code_code_IF(p):
 def p_error(p):
     print("Syntax error in input!")
     print(p)
-    
 
 
 if __name__ == "__main__":
     parser = yacc.yacc()
-    with open("example.ram","r") as f:
+    path = "example.ram"
+    with open(path,"r") as f:
         resultat = parser.parse("".join(f.readlines()))
-        resultat = "".join(resultat)
+    resultat = "registres = dict()\n" + "".join(resultat) + "print(registres)"
     print(resultat)
-   
+    out_path = "output/"+ path.split(".")[0] + ".py"
+    with open(out_path,"w") as f:
+        f.write(resultat)
