@@ -31,10 +31,10 @@ def main(path_ram:str) -> str:
             except:
                 if arg.find('@') >= 0:
                     r, rX = arg.split('@')
-                    rX = "{"+f"registres['{rX}']"+"}"
-                    output[i] = f'registres[f"{r}{rX}"]'
+                    rX = "{"+f"r['{rX}']"+"}"
+                    output[i] = f'r[f"{r}{rX}"]'
                 else:
-                    output[i] = f"registres['{arg}']"
+                    output[i] = f"r['{arg}']"
         return output
 
 
@@ -180,7 +180,7 @@ def main(path_ram:str) -> str:
     parser = yacc.yacc()
     with open(path_ram,"r") as f:
         resultat = parser.parse("".join(f.readlines()))
-    resultat = "registres = dict()\n" + "".join(resultat) + "print(registres)"
+    resultat = "r = dict()\n" + "".join(resultat) + "print(r)"
     print(resultat)
     path_ram = path_ram.split('/')
     out_path = "/".join(path_ram[:-1] + [f"output/{path_ram[-1].split('.')[0]}.py"])
