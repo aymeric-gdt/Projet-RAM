@@ -1,8 +1,6 @@
-import ram_to_python
 from classes import MachineUniverselle
-from tkinter.filedialog import askopenfilename
-import pathlib
 
 mu = MachineUniverselle()
+mu.load_input([i for i in range(10)])
 mu.build()
 mu.start()

@@ -1,65 +1,88 @@
-import re
+import re, time
 
 class RegistreManager:
 
     def __init__(self) -> None:
-        self.input = []
-        self.main = []
-        self.output = []
+        self.lr_input = []
+        self.lr_main = []
+        self.lr_output = []
 
-    def add_registre(self, r:str):
+    def __extend(self, lr:list, x:int):
+        while len(lr) < x+1:
+            lr.append(0)
+    
+    def __in_lr(self, lr:list, x:int) -> bool:
+        try:
+            lr[x]
+            return True
+        except:
+            return False
+    
+    def __select_lr(self, r):
         match r:
             case 'I':
-                self.input.append(0)
+                return self.lr_input
             case 'R':
-                self.main.append(0)
+                return self.lr_main
             case 'O':
-                self.output.append(0)
-    
-    def get_registre(self, rX:str)->int:
-        args = rX.split("@")
+                return self.lr_output
 
+    def __getset(self,rX):
+        args = rX.split("@")
         match len(args):
             case 2:
-                r,  = args[0]
+                r, x = self.__select_lr(args[0]), self.get_registre(args[1])
             case 1:
-                pass
+                r, x = self.__select_lr(args[0][0]), int(args[0][1:])
+        if self.__in_lr(r,x) is False:
+            self.__extend(r,x)
+        return r,x
 
-        match rX:
-            case 'I':
-                self.input.append(0)
-            case 'R':
-                self.main.append(0)
-            case 'O':
-                self.output.append(0)
+    def get_registre(self, rX:str)->int:
+        r,x = self.__getset(rX)
+        return r[x]
 
-    
     def set_registre(self, rX:str, value:int):
-        if rX not in self.content:
-            args = rX.split("@")
-            if len(args) > 1:
-                rX = f"{args[0]}{self.get_registre(args[1])}"
-        self.content[rX] = value
+        r,x = self.__getset(rX)
+        r[x] = value
     
     def __repr__(self) -> str:
-        
-        return self.content.__repr__()
-
+        output = 50*"*"+"\nREGISTRES:\n***INPUT***\n"
+        for i, content in enumerate(self.lr_input):
+            output += f"| I{i}={content} "
+        output += "\n***MAIN***\n"
+        for i, content in enumerate(self.lr_main):
+            output += f"| R{i}={content} "
+        output += "\n***OUTPUT***\n"
+        for i, content in enumerate(self.lr_output):
+            output += f"| O{i}={content} "
+        return output+"\n"+50*"*"
 
 class MachineUniverselle:
 
     def __init__(self) -> None:
         self.registres = RegistreManager()
         self.tasks = []
-        self.step = 0
+        self.pos = 0
+    
+    def load_input(self, data:list):
+        print("Machine Universel : Start of Input Loading")
+        t0 = time.time()
+        for i, v in enumerate(data):
+            self.registres.set_registre(f"I{i}", v)
+        print(f"Machine Universel : Input Loaded in {round((time.time()-t0)*1000,1)}ms")
     
     def get_config(self)-> tuple:
-        return (self.step, self.registres)
+        return (self.pos, self.registres)
+    
+    def set_config(self, new_pos, new_registres:RegistreManager):
+        self.pos = new_pos
+        self.registres = new_registres
     
     def next(self):
-        if self.step < len(self.tasks):
-            com, args = self.tasks[self.step]
-            self.step = com(args)
+        if self.pos < len(self.tasks):
+            com, args = self.tasks[self.pos]
+            self.pos = com(args)
             return True
         else:
             print("Machine Universel : End of program")
@@ -105,15 +128,17 @@ class MachineUniverselle:
     def start(self):
         number_of_tasks = len(self.tasks)
         print("Machine Universel : Start of program")
-        while self.step < number_of_tasks:
-            com, args = self.tasks[self.step]
-            self.step += com(args)
-        print("Machine Universel : End of program")
+        t0 = time.time()
+        while self.pos < number_of_tasks:
+            com, args = self.tasks[self.pos]
+            self.pos += com(args)
+        print(f"Machine Universel : Program finished in {round((time.time()-t0)*1000,1)}ms")
         print(self.registres)
 
     def build(self, path_of_ram_machine:str="example.ram"):
         """Build RAM Machine from .ram file"""
         print("Machine Universel : Build Started")
+        t0 = time.time()
         command_finder = re.compile(r'[A-Z][A-Z]+')
         parenthese_finder = re.compile(r'\(|\)')
         integer_finder = re.compile(r'^[0-9]+$|^-[0-9]+$')
@@ -148,5 +173,8 @@ class MachineUniverselle:
                         args[i] = int(args[i])
                 task = (command, args)
                 self.tasks.append(task)
-        print("Machine Universel : Build finished")
-    
+        print(f"Machine Universel : Build finished in {round((time.time()-t0)*1000,1)}ms")
+
+
+if __name__ == "__main__":
+    print("classes.py : Nothing to run from here.")
