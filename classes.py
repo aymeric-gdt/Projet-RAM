@@ -1,4 +1,6 @@
-import re, time
+import re
+from time import time
+from copy import deepcopy
 
 class RegistreManager:
 
@@ -66,14 +68,15 @@ class MachineUniverselle:
         self.pos = 0
     
     def load_input(self, data:list):
+        data = [len(data)] + data
         print("Machine Universel : Start of Input Loading")
-        t0 = time.time()
+        t0 = time()
         for i, v in enumerate(data):
             self.registres.set_registre(f"I{i}", v)
-        print(f"Machine Universel : Input Loaded in {round((time.time()-t0)*1000,1)}ms")
+        print(f"Machine Universel : Input Loaded in {round((time()-t0)*1000,1)}ms")
     
     def get_config(self)-> tuple:
-        return (self.pos, self.registres)
+        return (self.pos, deepcopy(self.registres))
     
     def set_config(self, new_pos, new_registres:RegistreManager):
         self.pos = new_pos
@@ -128,17 +131,17 @@ class MachineUniverselle:
     def start(self):
         number_of_tasks = len(self.tasks)
         print("Machine Universel : Start of program")
-        t0 = time.time()
+        t0 = time()
         while self.pos < number_of_tasks:
             com, args = self.tasks[self.pos]
             self.pos += com(args)
-        print(f"Machine Universel : Program finished in {round((time.time()-t0)*1000,1)}ms")
+        print(f"Machine Universel : Program finished in {round((time()-t0)*1000,1)}ms")
         print(self.registres)
 
     def build(self, path_of_ram_machine:str="example.ram"):
         """Build RAM Machine from .ram file"""
         print("Machine Universel : Build Started")
-        t0 = time.time()
+        t0 = time()
         command_finder = re.compile(r'[A-Z][A-Z]+')
         parenthese_finder = re.compile(r'\(|\)')
         integer_finder = re.compile(r'^[0-9]+$|^-[0-9]+$')
@@ -173,7 +176,7 @@ class MachineUniverselle:
                         args[i] = int(args[i])
                 task = (command, args)
                 self.tasks.append(task)
-        print(f"Machine Universel : Build finished in {round((time.time()-t0)*1000,1)}ms")
+        print(f"Machine Universel : Build finished in {round((time()-t0)*1000,1)}ms")
 
 
 if __name__ == "__main__":

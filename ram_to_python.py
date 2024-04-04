@@ -183,7 +183,7 @@ def main(path_ram:str) -> str:
     resultat = "r = dict()\n" + "".join(resultat) + "print(r)"
     print(resultat)
     path_ram = path_ram.split('/')
-    out_path = "/".join(path_ram[:-1] + [f"output/{path_ram[-1].split('.')[0]}.py"])
+    out_path = "/".join(path_ram[:-1] + [f"{path_ram[-1].split('.')[0]}.py"])
     with open(out_path,"w") as f:
         f.write(resultat)
     return out_path
