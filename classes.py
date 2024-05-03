@@ -92,7 +92,7 @@ class MachineUniverselle:
             return False
 
     def __get_value(self, arg) -> int:
-        if type(arg) is str:
+        if isinstance(arg, str):
             arg = self.registres.get_registre(arg)
         return arg
     
