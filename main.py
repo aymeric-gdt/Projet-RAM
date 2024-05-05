@@ -7,6 +7,7 @@ tests = ["deadcode_example.ram",
 
 mu = MachineUniverselle()
 mu.load_input([rd.randint(0,10) for _ in range(10)])
-mu.build("ram/"+tests[2])
+mu.build("ram/"+tests[0])
 #mu.show_graph()
-mu.start()
+#mu.start()
+mu.dead_code_detector()

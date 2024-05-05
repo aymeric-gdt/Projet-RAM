@@ -204,8 +204,30 @@ class MachineUniverselle:
                     pass
 
     def show_graph(self):
+        print("Machine Universel : Graph : Start.")
         nx.draw_networkx(self.graph)
         plt.show()
+        print("Machine Universel : Graph : End.")
+    
+    def dead_code_detector(self) -> list[int]:
+        print("Machine Universel : dead-code-detector : Start.")
+        output = []
+        zero_in_degree_nodes = [node for node, in_degree in self.graph.in_degree() if in_degree == 0]
+        if len(zero_in_degree_nodes) > 1:
+            for i in zero_in_degree_nodes[1:]:
+                i = i.split('-')
+                output.append(i[0])
+                print(f"Machine Universel : dead-code-detector : dead-code-founded at line {i[0]}")
+            print("Machine Universel : dead-code-detector : End.")
+        else:
+            print("Machine Universel : No dead-code detected.")
+        return output
+    
+    def code_optimizer(self):
+        # partie code mort
+        pass
+        # partie optimisation du code
+        pass
 
 
 if __name__ == "__main__":
