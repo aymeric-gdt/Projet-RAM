@@ -111,7 +111,7 @@ pip install matplotlib
             sinon :
                 O0 = 1
 
-    7. Pour tester le fonctionnement de cette machine RAM sur l'automate à pile reconnaissant {a^nb^n | n ∈ N}, exectuez la fonction test dans le fichier main.py.
+    7. Pour tester le fonctionnement de cette machine RAM sur l'automate à pile reconnaissant {a^nb^n | n ∈ N}, il aurait fallu exectuer la fonction test dans le fichier main.py. Cependant, nous n'avons pas réussi à faire fonctionner correctement notre machine ram. Nous pensons que notre code ne detecte pas de transition, et boucle jusqu'à ne plus en avoir à traiter
     Les transitions de l'automate sont les suivantes : (q0​,0,0,11,q1​), (q1​,0,1,11,q1​), (q1​,1,1,ϵ,q2​), (q2​,1,1,ϵ,q2​), (q2​,1,0,ϵ,qf​).
     Sont équivalent que l'on donnera en entrée sera : [0,0,0,1,1,2,2,0,1,1,1,2,2,1,1,0,0,3,3,1,1,0,0,3,3,1,0,0,0,1].
     Le premier état atteint est nommé 2 puisque l'état final doit être nommé 1.
