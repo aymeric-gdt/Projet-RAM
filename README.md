@@ -8,7 +8,22 @@ Cyriac THIBAUDEAU
 
 ## Simulation de l'exécution d'une machine RAM {#part1}
 
-    1. Notre programme prend en entrée un fichier text .ram représentant le programme voulu, qui doit être écrit tel qu'il le serait sur papier. En utilisant lex et yacc, on met en place un language et une grammaire qui nous permet d'analyser ligne par ligne le contenu de celui-ci. Grâce aux règles de la grammaire, on écrit la suite des opérations dans une liste en python pour garder un indexage de celles-ci. Ayant créée des fonctions python pour chaque fonctions RAM possibles, il ne reste au programme plus que d'évaluer une à une les instructions à suivre.
+    1. Notre programme prend en entrée un fichier text .ram représentant le programme voulu, qui doit être écrit tel qu'il le serait sur papier. 
+
+    La classe RegistreManager est utilisée pour gérer trois types de registres : lr_input, lr_main et lr_output. Voici ses méthodes et son fonctionnement :
+
+        Initialisation (__init__) : Crée des listes vides pour chaque type de registre.
+        Méthodes get_registre et set_registre : Permettent d'accéder et de modifier les valeurs des registres à un indice donné, spécifié par une chaîne comme "I5" pour lr_input ou "R3" pour lr_main.
+        Méthodes privées (__extend, __in_lr, __select_lr, __getset) : Gèrent les opérations internes comme l'extension des listes de registres, la vérification de l'existence d'indices, et la sélection des registres appropriés.
+        Représentation (__repr__) : Fournit une représentation sous forme de chaîne de l'état actuel de chaque registre.
+
+    La classe MachineUniverselle est une représentation en python d'une Machine Universelle comme son nom l'indique. Elle est la base de notre code. Voici ses méthodes et son fonctionnement :
+
+        Initialisation (__init__) : Instance des registres à partir de la classe précédente, une liste de tâches, une position, et un graphe.
+        Méthodes (load_input, get_config, set_config, next, start, build, show_graph, dead_code_detector, code_optimize) : Utilisées pour charger des données, obtenir les registres et modifier la configuration des registres, implementer le fonctionnement pas à pas, executer la machine, construire la machine à partir de l'input, dessiner le graphe tel qu'il est demandé dans la question 8, détecter du code mort et enfin optimiser la machine construite.
+        Méthodes privées (__get_value, __ADD, __SUB, __MULT, __DIV, __MOD, __JUMP, __JE, __JLT, __JGT, __build_graph) : Correspondent à des opérations mathématiques que l'on va trouver dans les codes ram, en plus de fonctions nous permettant d'obtenir la valeur d'un registre par une chaine de caractère et d'un constructeur de graphe. 
+            
+            
 
 ## La pile de la RAM {#part2}
 
