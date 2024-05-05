@@ -26,12 +26,12 @@ Cyriac THIBAUDEAU
 
         Boucle principale :
 
-            tant que R2 < R0:
+            tant que R2 < I1:
 
                 adresse = R2
                 R4 = I@R2
 
-                pour i de 0 à R1-1
+                pour i de 0 à I2-1
 
                     i_transi = 3 + I1 + i * 6
                     q = I@i_transi
@@ -54,7 +54,7 @@ Cyriac THIBAUDEAU
                                 si w1 vaut 1 ou 2 :
                                     R@(6 + R5) = w1
                                     R5 += 1
-                                    
+
                                 si w2 vaut 1 ou 2 :
                                     R@(6 + R5) = w2
                                     R5 += 1
