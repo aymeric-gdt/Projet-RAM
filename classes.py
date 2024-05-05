@@ -145,10 +145,10 @@ class MachineUniverselle:
         """Build RAM Machine from .ram file"""
         print("Machine Universel : Build Started")
         t0 = time()
+        self.path = path_of_ram_machine
         command_finder = re.compile(r'[A-Z][A-Z]+')
         parenthese_finder = re.compile(r'\(|\)')
         integer_finder = re.compile(r'^[0-9]+$|^-[0-9]+$')
-
         with open(path_of_ram_machine,"r") as f:
             nodes = dict()
             while (line:=f.readline()) != "":
@@ -214,20 +214,48 @@ class MachineUniverselle:
         output = []
         zero_in_degree_nodes = [node for node, in_degree in self.graph.in_degree() if in_degree == 0]
         if len(zero_in_degree_nodes) > 1:
-            for i in zero_in_degree_nodes[1:]:
-                i = i.split('-')
-                output.append(i[0])
-                print(f"Machine Universel : dead-code-detector : dead-code-founded at line {i[0]}")
+            parcours_prof = nx.dfs_tree(self.graph, source=zero_in_degree_nodes[0])
+            difference_graph_vs_parcours_prof = sorted(set(self.graph.edges())-set(parcours_prof.edges()))
+            for c in difference_graph_vs_parcours_prof:
+                c1, c2 = c
+                c1 = int(c1.split('-')[0])
+                c2 = int(c2.split('-')[0])
+                if c1 < c2:
+                    if len(output) == 0:
+                        output.append(c1-1)
+                    output.append(c1)
+                    print(f"Machine Universel : dead-code-detector : line {c1+1} founded.")
             print("Machine Universel : dead-code-detector : End.")
         else:
-            print("Machine Universel : No dead-code detected.")
+            print("Machine Universel : dead-code-detector : Nothing to report.")
         return output
     
-    def code_optimizer(self):
-        # partie code mort
+    def code_optimizer(self) -> str:
+        print("Machine Universel : code-optimizer : Start.")
+        with open(self.path,'r') as f:
+            lines = f.readlines()
+        # removing of dead-code
+        for i in self.dead_code_detector():
+            lines[i] = "\n"
+        while True:
+            try:
+                lines.remove("\n")
+            except ValueError:
+                break
+        # code-optimization
         pass
-        # partie optimisation du code
-        pass
+        # write a brand new optimized code
+        path_split = self.path.split('/')
+        file_split = path_split[-1].split('.')
+        new_name = file_split[0]+"_optimized."+file_split[1]
+        path_split[-1] = new_name
+        new_path = "/".join(path_split)
+        with open(new_path,"w") as f:
+            f.writelines(lines)
+        self.path = new_path
+        print(f"Machine Universel : code-optimizer : optimized ram-code created at {self.path}")
+        print("Machine Universel : code-optimizer : End.")
+        return self.path
 
 
 if __name__ == "__main__":
