@@ -79,7 +79,7 @@ if __name__ == "__main__":
     #test_next(6)
     #test_apowb()
     #test_triabulle()
-    #test_automate([0,1,0,1,0,1,0,1,0,1], [0,0,0,1,1,2,2,0,1,1,1,2,2,1,1,0,0,3,3,1,1,0,0,3,3,1,0,0,0,1])
+    #test_automate([1,1,1,1,0,0,0,0, [0,0,0,1,1,2,2,0,1,1,1,2,2,1,1,0,0,3,3,1,1,0,0,3,3,1,0,0,0,1])
     #test_graph()
     #test_dead_code()
     #test_dead_code_opti()
