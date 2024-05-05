@@ -12,5 +12,74 @@ Cyriac THIBAUDEAU
 
 ## La pile de la RAM {#part2}
 
+    1. Pseudo Code:
+
+        Initialisation : 
+
+            R0 = I1 : longueur de w
+            R1 = I2 : nombre de transi
+            R2 = 3 : pointeur de début du mot
+            R3 = 0 : état initial
+            R4 = 0 : contient le caractère courant du mot
+            R5 = 0 : taille de la pile
+            R6 ... = 0 : utilisé pour empiler/dépiler les symboles de la pile
+
+        Boucle principale :
+
+            tant que R2 < R0:
+
+                adresse = R2
+                R4 = I@R2
+
+                pour i de 0 à R1-1
+
+                    i_transi = 3 + I1 + i * 6
+                    q = I@i_transi
+
+                    si R3 == q :
+
+                        a = I@(i_transi + 1)
+
+                        si R4 == a :
+
+                            A = I@(i_transi + 2)
+                            sommet = R@(6 + R5)
+
+                            si A == sommet
+
+                                R5 -= 1
+                                w1 = I@i_transi + 3
+                                w2 = I@i_transi + 4
+
+                                si w1 vaut 1 ou 2 :
+                                    R@(6 + R5) = w1
+                                    R5 += 1
+                                    
+                                si w2 vaut 1 ou 2 :
+                                    R@(6 + R5) = w2
+                                    R5 += 1
+                                
+                                R3 = I@(i_transi + 5)
+                                R2 += 1
+                                break la boucle pour
+                            
+                            sinon :
+                                boucle suivante
+
+                        sinon :
+                            boucle suivante
+
+                    sinon : 
+                        boucle suivante
+
+                Fin Pour
+
+            Fin Tant que        
+
+            Si R3 == 1:
+                O0 = 0
+            sinon :
+                O0 = 1
+
 ## Optimisation de machine RAM {#part3}
 
