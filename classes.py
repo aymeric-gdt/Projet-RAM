@@ -150,6 +150,7 @@ class MachineUniverselle:
         integer_finder = re.compile(r'^[0-9]+$|^-[0-9]+$')
 
         with open(path_of_ram_machine,"r") as f:
+            nodes = dict()
             while (line:=f.readline()) != "":
                 line = line.replace('\n','')
                 x,y = command_finder.search(line).span()
@@ -162,40 +163,47 @@ class MachineUniverselle:
                 match command:
                     case 'ADD':
                         command = self.__ADD
-                        self.graph.add_edge(noeud.__repr__(),(noeud+1).__repr__())
+                        nodes[noeud.__repr__()] = (f"{noeud.__repr__()}-ADD",[(noeud+1).__repr__()])
                     case 'SUB':
                         command = self.__SUB
-                        self.graph.add_edge(noeud.__repr__(),(noeud+1).__repr__())
+                        nodes[noeud.__repr__()] = (f"{noeud.__repr__()}-SUB",[(noeud+1).__repr__()])
                     case 'MULT':
                         command = self.__MULT
-                        self.graph.add_edge(noeud.__repr__(),(noeud+1).__repr__())
+                        nodes[noeud.__repr__()] = (f"{noeud.__repr__()}-MULT",[(noeud+1).__repr__()])
                     case 'DIV':
                         command = self.__DIV
-                        self.graph.add_edge(noeud.__repr__(),(noeud+1).__repr__())
+                        nodes[noeud.__repr__()] = (f"{noeud.__repr__()}-DIV",[(noeud+1).__repr__()])
                     case 'MOD':
                         command = self.__MOD
-                        self.graph.add_edge(noeud.__repr__(),(noeud+1).__repr__())
+                        nodes[noeud.__repr__()] = (f"{noeud.__repr__()}-MOD",[(noeud+1).__repr__()])
                     case 'JUMP':
                         command = self.__JUMP
-                        self.graph.add_edge(noeud.__repr__(),(noeud+args[0]).__repr__())
+                        nodes[noeud.__repr__()] = (f"{noeud.__repr__()}-JUMP",[(noeud+args[0]).__repr__()])
                     case 'JE':
                         command = self.__JE
-                        self.graph.add_edge(noeud.__repr__(),(noeud+1).__repr__())
-                        self.graph.add_edge(noeud.__repr__(),(noeud+args[2]).__repr__())
+                        nodes[noeud.__repr__()] = (f"{noeud.__repr__()}-JE",[(noeud+1).__repr__(), (noeud+args[2]).__repr__()])
                     case 'JLT':
                         command = self.__JLT
-                        self.graph.add_edge(noeud.__repr__(),(noeud+1).__repr__())
-                        self.graph.add_edge(noeud.__repr__(),(noeud+args[2]).__repr__())
+                        nodes[noeud.__repr__()] = (f"{noeud.__repr__()}-JLT",[(noeud+1).__repr__(), (noeud+args[2]).__repr__()])
                     case 'JGT':
                         command = self.__JGT
-                        self.graph.add_edge(noeud.__repr__(),(noeud+1).__repr__())
-                        self.graph.add_edge(noeud.__repr__(),(noeud+args[2]).__repr__())
+                        nodes[noeud.__repr__()] = (f"{noeud.__repr__()}-JGT",[(noeud+1).__repr__(), (noeud+args[2]).__repr__()])
                 task = (command, args)
                 self.tasks.append(task)
+        self.nodes = nodes
+        self.__build_graph()
         print(f"Machine Universel : Build finished in {round((time()-t0)*1000,1)}ms")
 
+    def __build_graph(self):
+        for _,v in self.nodes.items():
+            name, sortants = v
+            for s in sortants:
+                try:
+                    self.graph.add_edge(name, self.nodes[s][0])
+                except KeyError:
+                    pass
+
     def show_graph(self):
-        print(self.graph)
         nx.draw_networkx(self.graph)
         plt.show()
 
