@@ -1,6 +1,22 @@
 from classes import MachineUniverselle
 import random as rd
 
+def test_next(step):
+    print("Test de la machine universelle avec le programme apowb.ram")
+    mu = MachineUniverselle()
+    mu.load_input([rd.randint(0,10) for _ in range(2)])
+    mu.build("ram/apowb.ram")
+
+    length = len(mu.tasks)
+    
+    if step > length:
+        print(f"Erreur : {step} > {length} (max d'étapes)")
+    else:
+        for i in range(step):
+            mu.next()
+            print("Etape:", i+1)
+            print(mu.registres)
+
 def test_apowb():
     print("Test de la machine universelle avec le programme apowb.ram")
     mu = MachineUniverselle()
@@ -50,7 +66,7 @@ def test_dead_code_opti():
 
 if __name__ == "__main__":
     #Enlevez les commentaires pour tester les fonctions :
-
+    test_next(6)
     #test_apowb()
     #test_triabulle()
     #test_automate([0,1,0,1,0,1,0,1,0,1], [0,0,0,1,1,2,2,0,1,1,1,2,2,1,1,0,0,3,3,1,1,0,0,3,3,1,0,0,0,1])

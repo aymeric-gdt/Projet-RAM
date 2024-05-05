@@ -88,7 +88,7 @@ class MachineUniverselle:
     def next(self):
         if self.pos < len(self.tasks):
             com, args = self.tasks[self.pos]
-            self.pos = com(args)
+            self.pos += com(args)
             return True
         else:
             print("Machine Universel : End of program")
