@@ -1,5 +1,6 @@
 from classes import MachineUniverselle
 import random as rd
+from tkinter.filedialog import askopenfilename
 
 #Question 2
 def test_next(step):

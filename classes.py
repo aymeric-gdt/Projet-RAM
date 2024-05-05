@@ -243,7 +243,8 @@ class MachineUniverselle:
         with open(self.path,'r') as f:
             lines = f.readlines()
         # removing of dead-code
-        for i in self.dead_code_detector():
+        dc = self.dead_code_detector()
+        for i in dc:
             lines[i] = "\n"
         while True:
             try:
