@@ -118,3 +118,7 @@ pip install matplotlib
 
 ## Optimisation de machine RAM {#part3}
 
+    8. Dans la classe MachineUniverselle nous avons implémentés la fonction show_graph() permettant de visualiser à l'aide de matplotlib et networkx le graph orienté du code ram.
+
+    9. Pour différencier le code mort du reste du code nous avons implémenté la fonction dead_code_detector() qui se base sur la graph orienté du code ram et sur une recherche en profondeur pour trouver les sommet jamais explorés et par extension le code mort. 
+
