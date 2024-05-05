@@ -1,6 +1,7 @@
 from classes import MachineUniverselle
 import random as rd
 
+#Question 2
 def test_next(step):
     print("Test de la machine universelle avec le programme apowb.ram")
     mu = MachineUniverselle()
@@ -15,8 +16,10 @@ def test_next(step):
         for i in range(step):
             mu.next()
             print("Etape:", i+1)
+            print("Position:", mu.pos)
             print(mu.registres)
 
+# Question 5
 def test_apowb():
     print("Test de la machine universelle avec le programme apowb.ram")
     mu = MachineUniverselle()
@@ -24,6 +27,7 @@ def test_apowb():
     mu.build("ram/apowb.ram")
     mu.start()
 
+# Question 5
 def test_triabulle():
     print("Test de la machine universelle avec le programme triabulle.ram")
     mu = MachineUniverselle()
@@ -31,6 +35,7 @@ def test_triabulle():
     mu.build("ram/triabulle.ram")
     mu.start()
 
+# Question 6/7
 def test_automate(mot:list, transitions:list):
     print("Test de la machine universelle avec le programme automate.ram")
     mu = MachineUniverselle()
@@ -42,12 +47,15 @@ def test_automate(mot:list, transitions:list):
     mu.build("ram/automate.ram")
     mu.start()
 
+# Question 8
 def test_graph():
     print("Test de l'affichage du graphe du programme apowb.ram")
     mu = MachineUniverselle()
     mu.load_input([rd.randint(0,10) for _ in range(10)])
     mu.build("ram/apowb.ram")
     mu.show_graph()
+
+# Question 9/10
 
 def test_dead_code():
     print("Test de la détection de code mort dans le programme deadcode_example.ram")
@@ -66,7 +74,8 @@ def test_dead_code_opti():
 
 if __name__ == "__main__":
     #Enlevez les commentaires pour tester les fonctions :
-    test_next(6)
+
+    #test_next(6)
     #test_apowb()
     #test_triabulle()
     #test_automate([0,1,0,1,0,1,0,1,0,1], [0,0,0,1,1,2,2,0,1,1,1,2,2,1,1,0,0,3,3,1,1,0,0,3,3,1,0,0,0,1])

@@ -135,11 +135,19 @@ class MachineUniverselle:
         number_of_tasks = len(self.tasks)
         print("Machine Universel : Start of program")
         t0 = time()
-        while self.pos < number_of_tasks:
-            com, args = self.tasks[self.pos]
-            self.pos += com(args)
+        str =""
+        for i in range(number_of_tasks):
+            self.next()
+            print("Etape:", i+1)
+            str += f"Etape: {i+1}\n"
+            print("Position:", self.pos)
+            str += f"Position: {self.pos}\n"
+            print(self.registres)
+            str += f"{self.registres}\n"
         print(f"Machine Universel : Program finished in {round((time()-t0)*1000,1)}ms")
-        print(self.registres)
+        str += f"Machine Universel : Program finished in {round((time()-t0)*1000,1)}ms"
+        with open("output.txt","w") as f:
+            f.write(str)
 
     def build(self, path_of_ram_machine:str="example.ram"):
         """Build RAM Machine from .ram file"""
