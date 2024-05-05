@@ -61,7 +61,7 @@ pip install matplotlib
                 adresse = R2
                 R4 = I@R2
 
-                pour i de 0 à I2-1
+                pour i de 0 à I2
 
                     i_transi = 3 + I1 + i * 6
                     q = I@i_transi
