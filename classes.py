@@ -1,6 +1,8 @@
 import re
 from time import time
 from copy import deepcopy
+import networkx as nx
+import matplotlib.pyplot as plt
 
 class RegistreManager:
 
@@ -66,6 +68,7 @@ class MachineUniverselle:
         self.registres = RegistreManager()
         self.tasks = []
         self.pos = 0
+        self.graph = nx.DiGraph()
     
     def load_input(self, data:list):
         data = [len(data)] + data
@@ -150,33 +153,51 @@ class MachineUniverselle:
             while (line:=f.readline()) != "":
                 line = line.replace('\n','')
                 x,y = command_finder.search(line).span()
-                command = line[x:y] #########
-                match command:
-                    case 'ADD':
-                        command = self.__ADD
-                    case 'SUB':
-                        command = self.__SUB
-                    case 'MULT':
-                        command = self.__MULT
-                    case 'DIV':
-                        command = self.__DIV
-                    case 'MOD':
-                        command = self.__MOD
-                    case 'JUMP':
-                        command = self.__JUMP
-                    case 'JE':
-                        command = self.__JE
-                    case 'JLT':
-                        command = self.__JLT
-                    case 'JGT':
-                        command = self.__JGT
                 args = parenthese_finder.sub('',line[y:]).split(',')
                 for i in range(len(args)):
                     if integer_finder.fullmatch(args[i]):
                         args[i] = int(args[i])
+                command = line[x:y]
+                noeud = len(self.tasks)
+                match command:
+                    case 'ADD':
+                        command = self.__ADD
+                        self.graph.add_edge(noeud.__repr__(),(noeud+1).__repr__())
+                    case 'SUB':
+                        command = self.__SUB
+                        self.graph.add_edge(noeud.__repr__(),(noeud+1).__repr__())
+                    case 'MULT':
+                        command = self.__MULT
+                        self.graph.add_edge(noeud.__repr__(),(noeud+1).__repr__())
+                    case 'DIV':
+                        command = self.__DIV
+                        self.graph.add_edge(noeud.__repr__(),(noeud+1).__repr__())
+                    case 'MOD':
+                        command = self.__MOD
+                        self.graph.add_edge(noeud.__repr__(),(noeud+1).__repr__())
+                    case 'JUMP':
+                        command = self.__JUMP
+                        self.graph.add_edge(noeud.__repr__(),(noeud+args[0]).__repr__())
+                    case 'JE':
+                        command = self.__JE
+                        self.graph.add_edge(noeud.__repr__(),(noeud+1).__repr__())
+                        self.graph.add_edge(noeud.__repr__(),(noeud+args[2]).__repr__())
+                    case 'JLT':
+                        command = self.__JLT
+                        self.graph.add_edge(noeud.__repr__(),(noeud+1).__repr__())
+                        self.graph.add_edge(noeud.__repr__(),(noeud+args[2]).__repr__())
+                    case 'JGT':
+                        command = self.__JGT
+                        self.graph.add_edge(noeud.__repr__(),(noeud+1).__repr__())
+                        self.graph.add_edge(noeud.__repr__(),(noeud+args[2]).__repr__())
                 task = (command, args)
                 self.tasks.append(task)
         print(f"Machine Universel : Build finished in {round((time()-t0)*1000,1)}ms")
+
+    def show_graph(self):
+        print(self.graph)
+        nx.draw_networkx(self.graph)
+        plt.show()
 
 
 if __name__ == "__main__":
