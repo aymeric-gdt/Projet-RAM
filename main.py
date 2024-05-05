@@ -1,7 +1,7 @@
 from classes import MachineUniverselle
 import random as rd
 
-#Question 2
+# Question 2
 def test_next(step):
     print("Test de la machine universelle avec le programme apowb.ram")
     mu = MachineUniverselle()
