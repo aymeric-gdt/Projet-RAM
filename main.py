@@ -52,7 +52,7 @@ def test_automate(mot:list, transitions:list):
 def test_graph():
     print("Test de l'affichage du graphe du programme apowb.ram")
     mu = MachineUniverselle()
-    mu.load_input([rd.randint(0,10) for _ in range(10)])
+    mu.load_input([rd.randint(0,10) for _ in range(2)])
     mu.build("ram/apowb.ram")
     mu.show_graph()
 
@@ -61,14 +61,12 @@ def test_graph():
 def test_dead_code():
     print("Test de la détection de code mort dans le programme deadcode_example.ram")
     mu = MachineUniverselle()
-    mu.load_input([rd.randint(0,10) for _ in range(10)])
     mu.build("ram/deadcode_example.ram")
     mu.dead_code_detector()
 
 def test_dead_code_opti():
     print("Test de la détection de code mort dans le programme deadcode_example_optimized.ram")
     mu = MachineUniverselle()
-    mu.load_input([rd.randint(0,10) for _ in range(10)])
     mu.build("ram/deadcode_example_optimized.ram")
     mu.dead_code_detector()
 
@@ -77,9 +75,9 @@ if __name__ == "__main__":
     #Enlevez les commentaires pour tester les fonctions :
 
     #test_next(6)
-    #test_apowb()
+    test_apowb()
     #test_triabulle()
-    test_automate([1,1,1,1,0,0,0,0], [0,0,0,1,1,2,2,0,1,1,1,2,2,1,1,0,0,3,3,1,1,0,0,3,3,1,0,0,0,1])
+    #test_automate([1,1,1,1,0,0,0,0], [0,0,0,1,1,2,2,0,1,1,1,2,2,1,1,0,0,3,3,1,1,0,0,3,3,1,0,0,0,1])
     #test_graph()
     #test_dead_code()
     #test_dead_code_opti()

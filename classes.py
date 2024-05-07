@@ -219,40 +219,21 @@ class MachineUniverselle:
     
     def dead_code_detector(self) -> list[int]:
         print("Machine Universel : dead-code-detector : Start.")
-        output = []
         zero_in_degree_nodes = [node for node, in_degree in self.graph.in_degree() if in_degree == 0]
-        if len(zero_in_degree_nodes) > 1:
-            parcours_prof = nx.dfs_tree(self.graph, source=zero_in_degree_nodes[0])
-            difference_graph_vs_parcours_prof = sorted(set(self.graph.edges())-set(parcours_prof.edges()))
-            for c in difference_graph_vs_parcours_prof:
-                c1, c2 = c
-                c1 = int(c1.split('-')[0])
-                c2 = int(c2.split('-')[0])
-                if c1 < c2:
-                    if len(output) == 0:
-                        output.append(c1-1)
-                    output.append(c1)
-                    print(f"Machine Universel : dead-code-detector : line {c1+1} founded.")
-            print("Machine Universel : dead-code-detector : End.")
-        else:
-            print("Machine Universel : dead-code-detector : Nothing to report.")
-        return output
+        edges_S = set(self.graph.nodes())
+        source = zero_in_degree_nodes[0]
+        edges_R = set(nx.dfs_tree(self.graph, source=source).nodes())
+        a = sorted(edges_S-edges_R)
+        print(source)
+        print(a)
+
     
     def code_optimizer(self) -> str:
         print("Machine Universel : code-optimizer : Start.")
         with open(self.path,'r') as f:
             lines = f.readlines()
         # removing of dead-code
-        dc = self.dead_code_detector()
-        for i in dc:
-            lines[i] = "\n"
-        while True:
-            try:
-                lines.remove("\n")
-            except ValueError:
-                break
         # code-optimization
-        pass
         # write a brand new optimized code
         path_split = self.path.split('/')
         file_split = path_split[-1].split('.')
