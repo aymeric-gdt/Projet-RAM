@@ -72,11 +72,11 @@ class MachineUniverselle:
     
     def load_input(self, data:list):
         data = [len(data)] + data
-        print("Machine Universel : Start of Input Loading")
+        print("Machine Universelle : Start of Input Loading")
         t0 = time()
         for i, v in enumerate(data):
             self.registres.set_registre(f"I{i}", v)
-        print(f"Machine Universel : Input Loaded in {round((time()-t0)*1000,1)}ms")
+        print(f"Machine Universelle : Input Loaded in {round((time()-t0)*1000,1)}ms")
     
     def get_config(self)-> tuple:
         return (self.pos, deepcopy(self.registres))
@@ -91,7 +91,7 @@ class MachineUniverselle:
             self.pos += com(args)
             return True
         else:
-            print("Machine Universel : End of program")
+            print("Machine Universelle : End of program")
             return False
 
     def __get_value(self, arg) -> int:
@@ -132,26 +132,25 @@ class MachineUniverselle:
         return args[2] if self.__get_value(args[0]) > self.__get_value(args[1]) else 1
     
     def start(self):
-        number_of_tasks = len(self.tasks)
-        print("Machine Universel : Start of program")
+        print("Machine Universelle : Start of program")
         t0 = time()
-        str =""
-        for i in range(number_of_tasks):
-            self.next()
-            print("Etape:", i+1)
-            str += f"Etape: {i+1}\n"
-            print("Position:", self.pos)
-            str += f"Position: {self.pos}\n"
-            print(self.registres)
-            str += f"{self.registres}\n"
-        print(f"Machine Universel : Program finished in {round((time()-t0)*1000,1)}ms")
-        str += f"Machine Universel : Program finished in {round((time()-t0)*1000,1)}ms"
+        output = "Debut : \n"+ self.registres.__repr__()+"\n"
+        i=0
+        while self.next():
+            output += f"Etape: {i}\n"
+            output += f"Position: {self.pos}\n"
+            output += f"{self.registres}\n"
+            i+=1
+        print(f"Machine Universelle : Program finished in {round((time()-t0)*1000,1)}ms")
+        output += "Fin : \n" + self.registres.__repr__()
         with open("output.txt","w") as f:
-            f.write(str)
+            f.write(output)
+        print("Machine Universelle : look at output.txt for execution details.")
+
 
     def build(self, path_of_ram_machine:str="example.ram"):
         """Build RAM Machine from .ram file"""
-        print("Machine Universel : Build Started")
+        print("Machine Universelle : Build Started")
         t0 = time()
         self.path = path_of_ram_machine
         command_finder = re.compile(r'[A-Z][A-Z]+')
@@ -200,7 +199,7 @@ class MachineUniverselle:
                 self.tasks.append(task)
         self.nodes = nodes
         self.__build_graph()
-        print(f"Machine Universel : Build finished in {round((time()-t0)*1000,1)}ms")
+        print(f"Machine Universelle : Build finished in {round((time()-t0)*1000,1)}ms")
 
     def __build_graph(self):
         for _,v in self.nodes.items():
@@ -212,24 +211,26 @@ class MachineUniverselle:
                     pass
 
     def show_graph(self):
-        print("Machine Universel : Graph : Start.")
+        print("Machine Universelle : Graph : Start.")
         nx.draw_networkx(self.graph)
         plt.show()
-        print("Machine Universel : Graph : End.")
+        print("Machine Universelle : Graph : End.")
     
     def dead_code_detector(self) -> list[int]:
-        print("Machine Universel : dead-code-detector : Start.")
+        print("Machine Universelle : dead-code-detector : Start.")
         zero_in_degree_nodes = [node for node, in_degree in self.graph.in_degree() if in_degree == 0]
         edges_S = set(self.graph.nodes())
         source = zero_in_degree_nodes[0]
         edges_R = set(nx.dfs_tree(self.graph, source=source).nodes())
         a = sorted(edges_S-edges_R)
-        print(source)
-        print(a)
-
+        print(f"Machine Universelle : dead-code-detector : Starting point : {source}")
+        for l in a:
+            for i, n in enumerate(self.graph.nodes):
+                if l == n:
+                    print(f"ligne n°{i} obselète : {n}")
     
     def code_optimizer(self) -> str:
-        print("Machine Universel : code-optimizer : Start.")
+        print("Machine Universelle : code-optimizer : Start.")
         with open(self.path,'r') as f:
             lines = f.readlines()
         # removing of dead-code
@@ -243,8 +244,8 @@ class MachineUniverselle:
         with open(new_path,"w") as f:
             f.writelines(lines)
         self.path = new_path
-        print(f"Machine Universel : code-optimizer : optimized ram-code created at {self.path}")
-        print("Machine Universel : code-optimizer : End.")
+        print(f"Machine Universelle : code-optimizer : optimized ram-code created at {self.path}")
+        print("Machine Universelle : code-optimizer : End.")
         return self.path
 
 
